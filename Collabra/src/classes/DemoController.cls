@@ -23,6 +23,7 @@ global class DemoController {
             result.add(new FeedItemInfo(item));
         }
          //List<FeedItemInfo> result = new List<FeedItemInfo>();
+         System.debug('hello');
         return result;
     }
     
