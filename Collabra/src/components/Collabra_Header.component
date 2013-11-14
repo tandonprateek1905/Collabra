@@ -1,0 +1,9 @@
+<apex:component >
+<div class="pageheader">
+    <div class="logo">
+  <a href="/apex/HomePage" title="Welcome to Collabra"><img src="http://www.simplion.com/images/simplion-cloud-salesforce-logo.png" alt="Welcome to Collabra" /></a>
+  </div>
+  <div class="back2sfmenu"><a href="/home/home.jsp"  title="Back to Salesforce"><img src="/img/seasonLogos/2013_summer_aloha.png" alt="Back to Salesforce" /></a></div>
+  <div class="clearfix"></div>
+  </div>
+</apex:component>

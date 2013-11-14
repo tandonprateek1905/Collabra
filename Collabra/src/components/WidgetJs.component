@@ -1,0 +1,1391 @@
+<apex:component > 
+<script>
+//-------------------------------------------------------------------------------
+// Page Layout js
+//-------------------------------------------------------------------------------
+
+$(document).ready(function () {
+    $('.wrapper').css('margin', '0 auto 30px');
+       $('#AddWidgetSelectionList').on('show', function () {
+        $('body').addClass('modal-open');
+      });
+      $('#AddWidgetSelectionList').on('hidden', function () {
+          $('body').removeClass('modal-open');
+          $(this).data('modal', null);
+          $('.modal-body',this).empty();
+     });
+     
+      $('#ConfigWidgetInstance').on('show', function () {
+        $('body').addClass('modal-open');
+      });
+      $('#ConfigWidgetInstance').on('hidden', function () {
+          $('body').removeClass('modal-open');
+            $(this).data('modal', null);
+          $('.modal-body',this).empty();
+          //console.log('===='+ $('.modal-body',this).html());
+         // $('.modal-body',this).html('');
+     });
+});
+
+//-------------------------------------------------------------------------------
+// WidgetFramework js
+//-------------------------------------------------------------------------------
+
+var gridster = undefined;
+
+var deletedWidgetsCollection = [];
+var widgetsCollection = [];
+
+var tempWidgetCount = 1;
+
+function Widgets() { }
+
+Widgets.LoadingNeeded = true;
+
+Widgets.Sizes = [
+    // Breakpoint 0
+    {
+        Id: 0,
+        Width: 220,
+        Height: 220,
+        Margin: 5,
+        AllowColumnPosition: false,
+        MaxColumns: 1
+    },
+    // Breakpoint 1
+    {
+        Id: 1,
+        Width: 370,
+        Height: 280,
+        Margin: 5,
+        AllowColumnPosition: false,
+        MaxColumns: 1
+    },
+    // Breakpoint 2
+    {
+        Id: 2,
+        Width: 640,
+        Height: 280,
+        Margin: 5,
+        AllowColumnPosition: false,
+        MaxColumns: 1
+    },
+    // Breakpoint 3
+    // 2 Columns, Side Menu 
+    {
+        Id: 3,
+        Width: 255,
+        Height: 255,
+        Margin: 5,
+        AllowColumnPosition: false,
+        MaxColumns: 2
+    },
+    // Breakpoint 4
+    // 2 Columns, No Side Menu
+    {
+        Id: 4,
+        Width: 352,
+        Height: 352,
+        Margin: 5,
+        AllowColumnPosition: false,
+        MaxColumns: 2
+    },
+    // Breakpoint 5
+    {
+        Id: 5,
+        Width: 220,
+        Height: 220,
+        Margin: 5,
+        AllowColumnPosition: true,
+        MaxColumns: 4
+    },
+    // Breakpoint 6
+    {
+        Id: 6,
+        Width: 280,
+        Height: 280,
+        Margin: 5,
+        AllowColumnPosition: true,
+        MaxColumns: 4
+    }
+];
+
+Widgets.CurrentSize = Widgets.Sizes[0];
+Widgets.InResize = false;
+
+Widgets.Resize = function () {
+
+    var cSize = Widgets.GetGridSquareSize();
+
+    if (Widgets.CurrentSize.Id != cSize.Id
+        && !Widgets.InResize) {
+
+        Widgets.InResize = true;
+
+        Widgets.InitailiseGrid(cSize);
+
+        Widgets.CurrentSize = cSize;
+
+        GetPageLayout();
+        Widgets.ShowHideEditPageControls();
+
+        Widgets.InResize = false;
+    }
+}
+
+Widgets.Init = function () {
+
+    Widgets.LoadingNeeded = false;
+
+    Widgets.CurrentSize = Widgets.GetGridSquareSize();
+
+    Widgets.InitailiseGrid();
+    //GetPageLayout();
+
+    // layout controls
+    $('button#EditLayout').click(function (event) {
+        event.preventDefault();
+
+        showEditLayout(true);
+    });
+
+    // click save layout button
+    $('button#SaveLayout').click(function (event) {
+        event.preventDefault();
+        showOverLay();
+        SavePageLayout();
+    });
+
+    // click cancel layout button
+    $('button#CancelLayout').click(function (event) {
+        event.preventDefault();
+        showOverLay();
+        ResetPageLayout();
+
+        showEditLayout(false);
+    });
+
+    // submit add widget form
+    $('a#AddWidgetSelection1').click(function (event) {
+        var widgetSelectionCount = $('#WidgetSelectionItems').children().length;
+
+        if (widgetSelectionCount == 0) {
+            GetWidgetsSelection('');
+        } else {
+            ResetWidgetsSelection();
+        }
+    });
+
+    $('button#ConfigWidgetSave').click(function (event) {
+        event.preventDefault();
+
+        //ConfigWidgetInstanceSave();
+        var widgetInstanceID = $(this).attr('open-comp-id');
+        showOverLay();
+        saveNewsUserDetail(widgetInstanceID);
+    });
+
+  
+
+    $('#WidgetSelectionItems').live('click', 'li', function (e) {
+       /* var widgetID = $(this).attr('data-widgetid'),
+            templateTitle = $(this).attr('data-templatetitle');*/
+
+        $('#AddWidgetSelectionList').modal('hide');
+        $('#ConfigWidgetInstance').modal({
+            remote:'{!$page.richTextWidgetPage}',
+            refresh: true
+         });
+       
+       
+       // ConfigWidgetInstance(null, widgetID, templateTitle);
+
+    });
+
+    $('#ConfigWidgetInstance').on('click', '#WidgetConfigLayouts li', function () {
+        if (!$(this).hasClass()) {
+            $(this).siblings('li').removeClass('selected');
+
+            $(this).addClass('selected');
+        }
+    });
+
+    Widgets.ShowHideEditPageControls();
+
+}
+
+Widgets.GetGridSquareSize = function () {
+
+    var sSize = $("body").width();
+    var hasSideMenu = $("[id*='sideMenu']").length > 0;
+    var gWidth = $(".gridster").width();
+    var cSize = $.extend({}, Widgets.Sizes[0]);
+
+    if (sSize <= 320) {
+        cSize = $.extend({}, Widgets.Sizes[0]);
+    } else if (sSize > 320 && sSize <= 480) {
+        cSize = $.extend({}, Widgets.Sizes[1]);
+    } else if (sSize > 480 && sSize <= 767) {
+        cSize = $.extend({}, Widgets.Sizes[2]);
+    } else if (sSize > 767 && sSize <= 979 && hasSideMenu) {
+        cSize = $.extend({}, Widgets.Sizes[3]);
+    } else if (sSize > 767 && sSize <= 979 && !hasSideMenu) {
+        cSize = $.extend({}, Widgets.Sizes[4]);
+    } else if (sSize > 979 && sSize <= 1200) {
+        cSize = $.extend({}, Widgets.Sizes[5]);
+        if (hasSideMenu)
+            cSize.MaxColumns--;
+    } else if (sSize > 1200) {
+        cSize = $.extend({}, Widgets.Sizes[6]);
+        if (hasSideMenu)
+            cSize.MaxColumns--;
+    }
+
+    var width = Math.floor((gWidth - (cSize.MaxColumns * cSize.Margin * 2)) / cSize.MaxColumns);
+    var height = (width > 280) ? 280 : width;
+
+    cSize.Width = width;
+    cSize.Height = height;
+
+    return cSize;
+}
+
+Widgets.Sort = function (widgets) {
+
+    var w = $(widgets).sort(function (a, b) {
+        if (a.Row < b.Row) {
+            return -1;
+        }
+
+        if (a.Row == b.Row && a.Col < b.Col) {
+            return -1
+        }
+
+        if (a.Row == b.Row && a.Col == b.Col) {
+            return 0
+        }
+
+        return 1
+    });
+
+    return w;
+}
+
+Widgets.ShowHideEditPageControls = function () {
+
+    if (Widgets.CurrentSize.MaxColumns >= 3) {
+        $(".page-edit").show();
+    } else {
+        $(".page-edit").hide();
+    }
+
+}
+
+Widgets.InitailiseGrid = function (cSize) {
+    if (cSize == undefined) {
+        cSize = Widgets.CurrentSize;
+    }
+
+    if (gridster != undefined) {
+       /* gridster.remove_all_widgets();
+        $.data($(".gridster > ul"), 'gridster', null);
+        $(".gridster").removeClass("ready");
+
+        $(".gridster > ul").remove();
+        $(".gridster").append("<ul id=\"pageLayoutItems\"></ul>")*/
+    }
+
+    gridster = $(".gridster > ul").gridster({
+        widget_margins: [cSize.Margin, cSize.Margin],
+        widget_base_dimensions: [cSize.Width, cSize.Height],
+        resize: {
+        	enabled: true
+        },
+        serialize_params: function ($w, wgd) {
+            return {
+                id: $w.attr('data-widget-ID'),
+                col: wgd.col,
+                row: wgd.row,
+                size_x: wgd.size_x,
+                size_y: wgd.size_y,
+                data: $w.html().trim()
+            };
+        }
+    }).data('gridster');
+
+    if (gridster) {
+        gridster.disable();
+    }
+
+    $('.gridster ul').on('click', 'button#deleteWidget', function (event) {
+         var compObj=$(this);
+         bootbox.confirm("Are you sure?", function(result) {
+            if(result){
+                deleteComponentFromUserLayout(compObj);
+            }
+         }); 
+        
+      /*  showOverLay();
+        var widgetInstance = $(this).parentsUntil('li').parent(),
+         widgetInstanceID = $(widgetInstance).attr('data-widget-ID');
+        var userConfig='';
+	      var dataId=$(widgetInstance).attr('data-widget-ID')+'#';
+	      var datacol=$(widgetInstance).attr('data-col')+'#';
+	      var datasizeX=$(widgetInstance).attr('data-sizex')+'#';
+	      var datasizeY=$(widgetInstance).attr('data-sizey')+'#';
+	      var datarows=$(widgetInstance).attr('data-row')+'#';
+      
+      userConfig=userConfig+dataId+datarows+datacol+datasizeX+datasizeY;
+      inActiveWidget(userConfig,widgetInstanceID);*/
+      /*
+        DestroyWidgetInstanceControlsTooltips(widgetInstance);
+
+        DeleteWidgetInstance(widgetInstance);
+        */
+    });
+  function deleteComponentFromUserLayout($compObject){
+        showOverLay();
+         var widgetInstance =$compObject.parentsUntil('li').parent(),
+          widgetInstanceID = $(widgetInstance).attr('data-widget-ID');
+          var userConfig='';
+	      var dataId=$(widgetInstance).attr('data-widget-ID')+'#';
+	      var datacol=$(widgetInstance).attr('data-col')+'#';
+	      var datasizeX=$(widgetInstance).attr('data-sizex')+'#';
+	      var datasizeY=$(widgetInstance).attr('data-sizey')+'#';
+	      var datarows=$(widgetInstance).attr('data-row')+'#';
+      
+      userConfig=userConfig+dataId+datarows+datacol+datasizeX+datasizeY;
+      inActiveWidget(userConfig,widgetInstanceID);
+  }
+
+    $('.gridster ul').on('click', 'button#configWidget', function () {
+        var widgetInstance = $(this).parentsUntil('li').parent();
+         var widgetName=$(widgetInstance).attr('data-comp-name');
+          var widgetId=$(widgetInstance).attr('data-widget-ID');
+        //ConfigWidgetInstance(widgetInstance, null, null);
+      
+        $('button#ConfigWidgetSave').attr('open-comp-id',widgetId);
+        openNewsWidgetConfigrationModal(widgetId);
+    });
+    function openNewsWidgetConfigrationModal(recID){
+         $('#ConfigWidgetInstance').modal({
+            remote:'{!$page.NewsConfigrationPage}?id='+recID,
+            refresh: true
+         });
+    
+    } 
+      
+    
+     
+    $('.gridster ul').on('click', 'button#resizeWidgetSmallerX', function () {
+        var widgetInstance = $(this).parentsUntil('li').parent();
+
+        ResizeWidgetInstance(widgetInstance, -1, 0);
+    });
+
+    $('.gridster ul').on('click', 'button#resizeWidgetBiggerX', function () {
+        var widgetInstance = $(this).parentsUntil('li').parent();
+
+        ResizeWidgetInstance(widgetInstance, 1, 0);
+    });
+
+    $('.gridster ul').on('click', 'button#resizeWidgetSmallerY', function () {
+        var widgetInstance = $(this).parentsUntil('li').parent();
+
+        ResizeWidgetInstance(widgetInstance, 0, -1);
+    });
+
+    $('.gridster ul').on('click', 'button#resizeWidgetBiggerY', function () {
+        var widgetInstance = $(this).parentsUntil('li').parent();
+
+        ResizeWidgetInstance(widgetInstance, 0, 1);
+    });
+}
+
+//-------------------------------------------------------------------------------
+// Show edit layout on toolbar
+//-------------------------------------------------------------------------------
+function showEditLayout(val) {
+    if (val == true) {
+        gridster.enable();
+        
+		$('.gridster > ul > li').each(function () {
+            ToggleWidgetInstanceMode($(this), true);
+        });
+
+        $('#EditLayout').hide();
+        $('#closeEdit').hide();
+        $('#SaveLayout').show();
+        $('#CancelLayout').show();
+        $('#AddWidgetListSelection').show();
+
+    } else {
+        gridster.disable();
+
+        $('.gridster > ul > li').each(function () {
+            ToggleWidgetInstanceMode($(this), false);
+        });
+
+        $('#EditLayout').show();
+        $('#closeEdit').show();
+        $('#SaveLayout').hide();
+        $('#CancelLayout').hide();
+        $('#AddWidgetListSelection').hide();
+
+    }
+}
+
+function ToggleWidgetInstanceMode(widgetInstance, showEditMode) {
+    if (widgetInstance != null) {
+        if (showEditMode) {
+            $(widgetInstance).removeClass('normal').addClass('edited').removeClass('selected-edit').removeClass('selected-delete');
+            $(widgetInstance).find('div.widgetHeader').show();
+
+        } else {
+            $(widgetInstance).addClass('normal').removeClass('edited').removeClass('selected-edit').removeClass('selected-delete');
+            $(widgetInstance).find('div.widgetHeader').hide();
+
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------
+// Show delete layout on toolbar
+//-------------------------------------------------------------------------------
+function showDeleteWidgetLayout(val) {
+    if (val == true) {
+        $('#DeleteWidget').addClass('btn-info');
+        $('#DeleteWidget').html('Select Widgets');
+        $('#CancelDeleteWidget').show();
+
+        gridster.disable();
+    } else {
+        $('#DeleteWidget').removeClass('btn-info').removeClass('btn-danger');
+        $('#DeleteWidget').html('Delete Widgets');
+        $('#CancelDeleteWidget').hide();
+
+        gridster.enable();
+    }
+}
+
+//-------------------------------------------------------------------------------
+// Reset styling of widgets available for selection by user
+//-------------------------------------------------------------------------------
+function ResetWidgetsSelection() {
+    $('#WidgetSelectionItems div').removeClass('widget-selection-selected').addClass('widget-selection');
+}
+
+//-------------------------------------------------------------------------------
+// Change widget instance styling to be in edit mode
+//-------------------------------------------------------------------------------
+function ShowWidgetEditMode(newWidgetInstance) {
+    $(newWidgetInstance).removeClass('normal').addClass('edited').removeClass('selected-edit').removeClass('selected-delete');
+    $(newWidgetInstance).children('div#widgetHeader').show();
+}
+
+//-------------------------------------------------------------------------------
+// Reset layout (Remove existing widget instances and regenerate)
+//-------------------------------------------------------------------------------
+function ResetPageLayout() {
+
+    Widgets.InitailiseGrid();
+    resetWidget();
+    //GetPageLayout();
+}
+
+//-------------------------------------------------------------------------------
+// Get page layout
+//-------------------------------------------------------------------------------
+function GetPageLayout() {
+    var sectionID = Utilities.GetQueryStringParams('section');
+    var homepageID = Utilities.GetQueryStringParams('homepage');
+
+    if (!sectionID) {
+        sectionID = -1;
+    }
+
+    if (!homepageID) {
+        homepageID = -1;
+    }
+
+    WidgetFramework_Proxy.GetPageLayout(sectionID, homepageID, getPageLayoutSuccessCallback, getPageLayoutFailureCallback);
+}
+
+var getPageLayoutSuccessCallback = function  (data) {
+    widgetsCollection = [];
+
+    if (data.length > 0) {
+
+        data = Widgets.Sort(data);
+
+        for (var i = 0; i < data.length; i++) {
+            var widgetInstanceID = data[i].ID,
+                row = (Widgets.CurrentSize.AllowColumnPosition) ? data[i].Row : undefined,
+                col = (Widgets.CurrentSize.AllowColumnPosition) ? data[i].Col : undefined,
+                sizex = (data[i].SizeX > Widgets.CurrentSize.MaxColumns) ? Widgets.CurrentSize.MaxColumns : data[i].SizeX,
+                sizey = data[i].SizeY,
+                title = data[i].Title;
+
+            // get widget instance object
+            var widgetInstanceObject = AddWidgetInstanceObjectToCollection(data[i]);
+            widgetInstanceObject.Template = Handlebars.templates[widgetInstanceObject.FullTemplateTitle]
+
+            // get common widget instance markup
+            var widgetInstance = GetCommonWidgetHTML(widgetInstanceObject);
+
+            // add widget instance to page using gridster
+            widgetInstance = gridster.add_widget(widgetInstance, sizex, sizey, col, row, function () {
+                // get required widget instance variables
+                var newWidgetInstance = $(this);
+                var newWidgetInstanceObject = GetWidgetInstanceFromCollection(newWidgetInstance);
+                newWidgetInstanceObject.InitialLoad = false;
+
+                // start spinner on empty widget instance
+                newWidgetInstance.spin('small');
+
+                $(newWidgetInstance).attr("data-widget-loaded", true);
+                Widgets.HideLoading();
+
+                // get specific widget instance markup
+                newWidgetInstanceObject.GetData(newWidgetInstance, newWidgetInstanceObject, widgetInstanceGetDataCallback);
+            });
+
+            //WidgetInstanceGetData(widgetInstance, widgetInstanceObject);
+
+            //var widgetInstance = gridster.add_widget(widgetInstance, sizex, sizey, col, row, function (newWidgetInstance) {
+            //    console.log('Height: ' + $(this).height());
+            //});
+
+            //$(widgetInstance).addClass(widgetInstanceObject.ClassName);
+
+            //UpdateWidgetInstanceResizeControls(widgetInstance, widgetInstanceObject);
+        }
+
+    } else {
+        Widgets.HideLoading();
+    }
+
+    //Utilities.ApplyTooltips();
+
+    //if (Widgets.LoadingShown) {
+    //    $(".gridster-loading").hide();
+    //    $(".gridster-loading .loading-spinner").spin(false);
+    //}
+}
+
+var getPageLayoutFailureCallback = function (data) {
+    log('GetPageLayout request failure', data);
+}
+
+var widgetInstanceGetDataCallback = function (widgetInstance, widgetInstanceObject, widgetInstanceBody) {
+    // hide body before appended to widget
+    //widgetInstanceBody = $(widgetInstanceBody).css('visibility', 'hidden');
+
+    // get widget layout template and generate html
+    var commonContentsWidgetTemplate = Handlebars.templates['widgets_common_contents'],
+        widgetInstanceContent = commonContentsWidgetTemplate({ Title: widgetInstanceObject.Title, Body: widgetInstanceBody });
+
+    // clear existing content
+    widgetInstance.empty();
+
+    // append content to common layout
+    widgetInstance.append(widgetInstanceContent);
+
+    // post render callbacks
+
+    // framework callbacks
+    UpdateWidgetInstanceResizeControls(widgetInstance, widgetInstanceObject);
+
+    if (widgetInstanceObject.InitialLoad) {
+        ToggleWidgetInstanceMode(widgetInstance, true);
+    }
+
+    // widget specific callbacks
+    for (var c = 0; c < widgetInstanceObject.Callbacks.length; c++) {
+        widgetInstanceObject.Callbacks[c].call(this, widgetInstance, widgetInstanceObject);
+    }
+
+    // stop widget spinner
+    widgetInstance.spin(false);
+
+
+    // show body after callbacks complete
+    //widgetInstanceBody.css('visibility', 'visible');
+
+    //// add widget instance to page using gridster
+    //widgetInstance = gridster.add_widget(widgetInstance, widgetInstanceObject.SizeX, widgetInstanceObject.SizeY, widgetInstanceObject.Col, widgetInstanceObject.Row, function (newWidgetInstance) {
+    //    // post render callbacks
+
+    //    // framework callbacks
+
+    //    // widget specific callbacks
+    //    for (var c = 0; c < widgetInstanceObject.Callbacks.length; c++) {
+    //        widgetInstanceObject.Callbacks[c].call(this, widgetInstance, widgetInstanceObject);
+    //    }
+
+    //    // show body after callbacks complete
+    //    //widgetInstanceBody.css('visibility', 'visible');
+    //});
+
+    //UpdateWidgetInstanceResizeControls(widgetInstance, widgetInstanceObject);
+}
+
+Widgets.HideLoading = function () {
+    var widgets = $(".gridster > ul > li").length
+    var widgetsLoaded = $(".gridster > ul > li[data-widget-loaded=true]").length;
+
+    if (widgets == widgetsLoaded) {
+        if ($(".gridster-loading").is(":visible")) {
+            $(".gridster-loading .loading-spinner").spin(false);
+            $(".gridster-loading").hide();
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------
+// Save page layout (added/deleted widget instances, movements, properties)
+//-------------------------------------------------------------------------------
+function SavePageLayout(changedWidgetsCollection, newWidgetsCollection) {
+   var userConfig='';
+   var i=0;
+   $('li.widgetD').each(function(key,value){
+      if(i>0){
+        userConfig=userConfig+'@';
+      }
+      var dataId=$(this).attr('data-widget-ID')+'#';
+      var datacol=$(this).attr('data-col')+'#';
+      var datasizeX=$(this).attr('data-sizex')+'#';
+      var datasizeY=$(this).attr('data-sizey')+'#';
+      var datarows=$(this).attr('data-row')+'#';
+      
+      userConfig=userConfig+dataId+datarows+datacol+datasizeX+datasizeY;
+      i++;
+    });
+   saveUserConfiguration(userConfig);
+   
+   
+   
+   
+   /* var sectionID = Utilities.GetQueryStringParams('section');
+    var homepageID = Utilities.GetQueryStringParams('homepage');
+
+    if (!sectionID) {
+        sectionID = -1;
+    }
+
+    if (!homepageID) {
+        homepageID = -1;
+    }
+
+    SyncWidgetInstanceCollection();
+
+    var newWidgetsCollection = [];
+    var changedWidgetsCollection = [];
+    var deletedWidgetsCollection = [];
+
+    // get new and changed widgets for saving
+    for (var i = 0; i < widgetsCollection.length; i++) {
+        switch (widgetsCollection[i].Status) {
+            case 'new':
+                newWidgetsCollection.push(widgetsCollection[i]);
+
+                break;
+
+            case 'edited':
+                changedWidgetsCollection.push(widgetsCollection[i]);
+
+                break;
+
+            case 'deleted':
+                deletedWidgetsCollection.push(widgetsCollection[i]);
+
+                break;
+        }
+    }
+
+    WidgetFramework_Proxy.SavePageLayout(sectionID, homepageID, changedWidgetsCollection, newWidgetsCollection, deletedWidgetsCollection, savePageLayoutSuccessCallback, savePageLayoutFailureCallback);
+    */
+}
+
+var savePageLayoutSuccessCallback = function (data) {
+   
+    ResetPageLayout();
+
+    showEditLayout(false);
+}
+
+var savePageLayoutFailureCallback = function (data) {
+    log('SavePageLayout request failure', data);
+}
+
+//-------------------------------------------------------------------------------
+// Get list of widgets available for selection by user
+//-------------------------------------------------------------------------------
+function GetWidgetsSelection(sText) {
+    WidgetFramework_Proxy.GetWidgetsSelection(sText, getWidgetsSelectionSuccessCallback, getWidgetsSelectionFailureCallback);
+    WidgetFramework_Proxy.GetWidgetSearch(getWidgetSearchSuccessCallback, getWidgetSearchFailureCallback);
+}
+
+var getWidgetSearchSuccessCallback = function (data) {
+    var options = $("#drpWidgetSearch");
+    $.each(data, function () {
+        options.append($("<option />").val(this.Value).text(this.Text));
+    });
+}
+
+var getWidgetSearchFailureCallback = function (data) {
+    log('GetWidgetSearch request failure', data);
+}
+
+var getWidgetsSelectionSuccessCallback = function (data) {
+
+    var widgetSelectionTemplate = Handlebars.templates['widgets_selection'];
+
+    $('#WidgetSelectionItems').empty();
+    $('#WidgetSelectionItems').append(widgetSelectionTemplate({ widgetselections: data }));
+}
+
+var getWidgetsSelectionFailureCallback = function (data) {
+    log('GetWidgetsSelection request failure', data);
+}
+
+function UpdateWidgetInstanceResizeControls(widgetInstance, widgetInstanceObject) {
+    var sizeX = widgetInstance.attr('data-sizex');
+    var sizeY = widgetInstance.attr('data-sizey');
+
+    var minSizeX = widgetInstanceObject.MinSizeX;
+    var minSizeY = widgetInstanceObject.MinSizeY;
+    var maxSizeX = widgetInstanceObject.MaxSizeX;
+    var maxSizeY = widgetInstanceObject.MaxSizeY;
+
+    var resizeWidgetSmallerX = $(widgetInstance).find('button#resizeWidgetSmallerX');
+    var resizeWidgetSmallerY = $(widgetInstance).find('button#resizeWidgetSmallerY');
+    var resizeWidgetBiggerX = $(widgetInstance).find('button#resizeWidgetBiggerX');
+    var resizeWidgetBiggerY = $(widgetInstance).find('button#resizeWidgetBiggerY');
+
+    if (sizeX <= minSizeX) {
+        resizeWidgetSmallerX.attr('disabled', 'disabled');
+        resizeWidgetSmallerX.tooltip('hide');
+
+    } else {
+        resizeWidgetSmallerX.removeAttr('disabled');
+    }
+
+    if (sizeY <= minSizeY) {
+        resizeWidgetSmallerY.attr('disabled', 'disabled');
+        resizeWidgetSmallerY.tooltip('hide');
+
+    } else {
+        resizeWidgetSmallerY.removeAttr('disabled');
+    }
+
+    if (sizeX >= maxSizeX) {
+        resizeWidgetBiggerX.attr('disabled', 'disabled');
+        resizeWidgetBiggerX.tooltip('hide');
+
+    } else {
+        resizeWidgetBiggerX.removeAttr('disabled');
+    }
+
+    if (sizeY >= maxSizeY) {
+        resizeWidgetBiggerY.attr('disabled', 'disabled');
+        resizeWidgetBiggerY.tooltip('hide');
+
+    } else {
+        resizeWidgetBiggerY.removeAttr('disabled');
+    }
+}
+
+function ResizeWidgetInstance(widgetInstance, diffX, diffY) {
+    var sizeX = widgetInstance.attr('data-sizex');
+    var sizeY = widgetInstance.attr('data-sizey');
+
+    var index = GetIndexInWidgetInstanceCollection(widgetInstance);
+    var widgetInstanceObject = widgetsCollection[index];
+
+    widgetInstance = GetWidgetInstance(widgetInstanceObject.ID);
+
+    var minSizeX = widgetInstanceObject.MinSizeX;
+    var minSizeY = widgetInstanceObject.MinSizeY;
+    var maxSizeX = widgetInstanceObject.MaxSizeX;
+    var maxSizeY = widgetInstanceObject.MaxSizeY;
+
+    var newSizeX = Number(sizeX) + diffX;
+    var newSizeY = Number(sizeY) + diffY;
+
+    if (newSizeX >= minSizeX && newSizeY >= minSizeY && newSizeX <= maxSizeX && newSizeY <= maxSizeY) {
+        gridster.resize_widget(widgetInstance, newSizeX, newSizeY);
+
+        ModifyWidgetInstanceStatusInCollection(widgetInstance, 'edited');
+    }
+
+    UpdateWidgetInstanceResizeControls(widgetInstance, widgetInstanceObject);
+
+    setTimeout(function () {
+        // resize widget if method exists
+        if (widgetInstanceObject.Resize != null) {
+            widgetInstanceObject.Resize(widgetInstance, widgetInstanceObject, diffX, diffY);
+        }
+
+        ResizeWidgetInstanceBody(widgetInstance);
+
+        Utilities.ReinitialiseScrollBar(widgetInstance.find('.widgetBody'));
+    }, 300);
+}
+
+//-------------------------------------------------------------------------------
+// Build and show widget instance canfiguration
+//-------------------------------------------------------------------------------
+function ConfigWidgetInstance(widgetInstance, widgetID, baseWidgetTitle) {
+    var collectionWidgetInstance,
+        widgetInstanceID = 'new' + tempWidgetCount,
+        widgetInstanceStatus = 'new';
+
+    // if not null then widget instance is being edited
+    if (widgetInstance != null) {
+        var index = GetIndexInWidgetInstanceCollection(widgetInstance);
+
+        if (index != null) {
+            collectionWidgetInstance = widgetsCollection[index];
+
+            widgetInstanceID = collectionWidgetInstance.ID;
+            widgetID = collectionWidgetInstance.WidgetID;
+            baseWidgetTitle = collectionWidgetInstance.BaseWidgetTitle;
+            layoutSubTitle = collectionWidgetInstance.LayoutSubTitle;
+
+            // if not new then toggle status to edited
+            if (collectionWidgetInstance.Status != 'new') {
+                widgetInstanceStatus = 'edited';
+
+            } else {
+                widgetInstanceStatus = collectionWidgetInstance.Status;
+
+            }
+
+        }
+
+    } else {
+        // temporary widget instance id is being used - iterate temp widget count
+        tempWidgetCount = tempWidgetCount + 1;
+
+    }
+
+    // derive widget specific names
+    var configWidgetMethodName = 'GetConfig_' + baseWidgetTitle,
+        configTemplateTitle = 'widgets_' + baseWidgetTitle.toLowerCase() + '_config',
+        configClassName = baseWidgetTitle + 'Config';
+
+    // generate config interface from widget specific template
+    var configWidgetTemplate = Handlebars.templates[configTemplateTitle];
+
+    // get common config interface containers
+    var configWidgetBody = $('#ConfigWidgetInterface'),
+        configWidgetModal = $('#ConfigWidgetInstance');
+
+    $(configWidgetModal).modal('show');
+
+    // empty widget config interface body and repopulate
+    $(configWidgetBody).empty();
+    $(configWidgetBody).append(configWidgetTemplate());
+
+    // set widget id data attribute
+    $(configWidgetModal).attr('data-widgetid', widgetID);
+
+    // set widget instance data attribute
+    $(configWidgetModal).attr('data-widget-ID', widgetInstanceID);
+
+    // set template title data attribute
+    $(configWidgetModal).attr('data-templatetitle', baseWidgetTitle);
+
+    // set widget instance status data attribute
+    $(configWidgetModal).attr('data-widgetinstancestatus', widgetInstanceStatus);
+
+    // get derived widget config method
+    var configWidget = Widgets[configWidgetMethodName];
+
+    // run widget specific config method
+    configWidget(widgetID, collectionWidgetInstance);
+
+    // show widget config modal
+    $(configWidgetModal).modal('show');
+
+    // Enable tooltips inside widget config modals
+    Utilities.ApplyTooltips();
+}
+
+function GetWidgetLayouts(widgetID, target, layoutSubTitle) {
+    WidgetFramework_Proxy.GetWidgetLayouts(widgetID, target, layoutSubTitle, getWidgetLayoutsSuccessCallback, getWidgetLayoutsFailureCallback);
+}
+
+var getWidgetLayoutsSuccessCallback = function (data, target, layoutSubTitle) {
+    //var commonWidgetLayoutSource = $("#CommonWidgetLayoutTemplate").html();
+    var commonWidgetLayoutTemplate = Handlebars.templates['widgets_commonlayout'];
+    var widgetLayoutInterface = $(target).append(commonWidgetLayoutTemplate({ Layouts: data }));
+
+    // enable tooltips inside widget config modals for the Layouts fields
+    Utilities.ApplyTooltips();
+
+    var elmSelectedItem;
+
+    // select specified layout or first in list
+    if (layoutSubTitle == null) {
+        elmSelectedItem = $(widgetLayoutInterface).find('li').first().addClass('selected');
+
+    } else {
+        elmSelectedItem = $(widgetLayoutInterface).find('li[data-layoutsubtitle="' + layoutSubTitle + '"]');
+
+        elmSelectedItem.addClass('selected');
+    }
+
+    setTimeout(function () {
+        var elmLayoutItemsContainer = $(widgetLayoutInterface).find('div#CommonWidgetLayoutItemsContainer');
+
+        Utilities.ApplyScrollBar(elmLayoutItemsContainer);
+
+        var api = elmLayoutItemsContainer.data('jsp');
+
+        api.scrollToElement(elmSelectedItem, false);
+    }, 300);
+}
+
+var getWidgetLayoutsFailureCallback = function (data) {
+    log('Get Widget Layouts request failure', data);
+}
+
+function getBool(value) {
+    if (value == undefined) {
+        return undefined;
+    }
+    else {
+        if (value === true || value == 'True' || value == 'true' || value == '1') {
+            return true;
+        }
+        else {
+            if (value === false || value == 'False' || value == 'False' || value == '0') {
+                return false;
+            }
+            else {
+                return undefined;
+            }
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------
+// Determine method to use to populate widget instance properties
+//-------------------------------------------------------------------------------
+function ConfigWidgetInstanceSave() {
+    // get widget instance properties
+    var configWidgetModal = $('#ConfigWidgetInstance'),
+        widgetID = $(configWidgetModal).attr('data-widgetid'),
+        widgetInstanceID = $(configWidgetModal).attr('data-widget-ID'),
+        baseTemplateTitle = $(configWidgetModal).attr('data-templatetitle'),
+        widgetInstanceStatus = $(configWidgetModal).attr('data-widgetinstancestatus');
+
+    // get existing widget instance
+    var oldWidgetInstance = GetWidgetInstance(widgetInstanceID);
+
+    // determine new widget instance boolean
+    var isNew = (oldWidgetInstance.length == 0);
+
+    // derive widget specific names
+    var getObjectMethodName = 'GetObject_' + baseTemplateTitle;
+    var validateMethodName = 'Validate_' + baseTemplateTitle;
+
+    // get derived widget methods
+    var getWidgetInstanceObject = Widgets[getObjectMethodName];
+    var validateWidget = Widgets[validateMethodName];
+
+    // get common widget instance properties
+    var widgetInstanceObject = new Object();
+    widgetInstanceObject.ID = widgetInstanceID;
+    widgetInstanceObject.WidgetID = widgetID;
+    widgetInstanceObject.BaseWidgetTitle = baseTemplateTitle;
+    widgetInstanceObject.Status = widgetInstanceStatus;
+    widgetInstanceObject.Options = [];
+    widgetInstanceObject.Callbacks = [];
+    widgetInstanceObject.LocalStorage = [];
+    widgetInstanceObject.InitialLoad = true;
+
+    widgetInstanceObject = getWidgetInstanceObject(widgetInstanceObject);
+
+    widgetInstanceObject.FullTemplateTitle = 'widgets_' + widgetInstanceObject.BaseWidgetTitle.toLowerCase() + '_' + widgetInstanceObject.LayoutSubTitle.toLowerCase();
+    widgetInstanceObject.ClassName = 'Widget_' + widgetInstanceObject.BaseWidgetTitle + '_' + widgetInstanceObject.LayoutSubTitle;
+    widgetInstanceObject.SectionID = Utilities.GetQueryStringParams('section');
+    widgetInstanceObject.InTeamSection = getBool(InTeamSection);
+    widgetInstanceObject.Template = Handlebars.templates[widgetInstanceObject.FullTemplateTitle];
+
+    // get common widget container markup
+    var widgetInstanceHTML = GetCommonWidgetHTML(widgetInstanceObject);
+
+    // validate widget, if available
+    var validationResult = true;
+
+    // validate widget if method exists
+    if (validateWidget != null) {
+        validationResult = validateWidget(widgetInstanceObject);
+    }
+
+    if (validationResult) {
+        var newWidgetInstance;
+
+        // Add gridster widget instance to page
+        if (isNew) {
+            newWidgetInstance = gridster.add_widget(widgetInstanceHTML, parseInt(widgetInstanceObject.MinSizeX), parseInt(widgetInstanceObject.MinSizeY));
+
+        } else {
+            var sizeX = parseInt($(oldWidgetInstance).attr('data-sizex')),
+                sizeY = parseInt($(oldWidgetInstance).attr('data-sizey')),
+                col = $(oldWidgetInstance).attr('data-col'),
+                row = $(oldWidgetInstance).attr('data-row');
+
+            // resize widget instance if below minimum
+            var minSizeX = parseInt(widgetInstanceObject.MinSizeX),
+                minSizeY = parseInt(widgetInstanceObject.MinSizeX);
+
+            if (sizeX < minSizeX) {
+                sizeX = minSizeX;
+            }
+
+            if (sizeY < minSizeY) {
+                sizeY = minSizeY;
+            }
+
+            gridster.remove_widget(oldWidgetInstance);
+
+            newWidgetInstance = gridster.add_widget(widgetInstanceHTML, sizeX, sizeY, col, row);
+        }
+
+        var getDataMethodName = RetrieveGetDataMethodName(widgetInstanceObject);
+        widgetInstanceObject.GetData = Widgets[getDataMethodName];
+
+        var saveConfigMethodName = RetrieveSaveConfigMethodName(widgetInstanceObject);
+        widgetInstanceObject.SaveConfig = Widgets[saveConfigMethodName];
+
+        var resizeMethodName = RetreiveResizeMethodName(widgetInstanceObject);
+        widgetInstanceObject.Resize = Widgets[resizeMethodName];
+
+        // Add widget instance object to collection
+        if (isNew) {
+            widgetsCollection.push(widgetInstanceObject);
+
+        } else {
+            // remove existing instance from collection
+            RemoveWidgetInstanceFromCollection(oldWidgetInstance);
+
+            // add new instance to collection
+            widgetsCollection.push(widgetInstanceObject);
+        }
+
+        // set widget instance class
+        $(newWidgetInstance).addClass(widgetInstanceObject.ClassName);
+
+        // save widget config data if method exists and get initial data
+        if (widgetInstanceObject.SaveConfig != null) {
+            var deferredGetData = new $.Deferred();
+
+            deferredGetData.then(WidgetInstanceGetData);
+
+            widgetInstanceObject.SaveConfig(newWidgetInstance, widgetInstanceObject, deferredGetData);
+
+        } else {
+            // get specific widget instance markup
+            widgetInstanceObject.GetData(newWidgetInstance, widgetInstanceObject, widgetInstanceGetDataCallback);
+        }
+
+        $('#ConfigWidgetInstance').modal('hide');
+    }
+}
+
+function WidgetInstanceGetData(widgetInstance, widgetInstanceObject) {
+    //var widgetInstance = GetWidgetInstance(widgetInstanceObject.ID);
+
+    //$(widgetInstance).spin('small');
+
+    return widgetInstanceObject.GetData(widgetInstance, widgetInstanceObject, widgetInstanceGetDataCallback);
+}
+
+function WidgetInstanceSpinnerCallback(widgetInstance, widgetInstanceObject) {
+    var newWidgetInstance = GetWidgetInstance(widgetInstanceObject.ID);
+
+    $(newWidgetInstance).spin(false);
+}
+
+function WidgetInstanceScrollbarCallback(widgetInstance, widgetInstanceObject, showOnApply, sizes, scrollCallback) {
+    var applyScrollBar = false;
+
+    for (var i = 0; i < sizes.length; i++) {
+        if (sizes[i] == Widgets.CurrentSize.Id) {
+            applyScrollBar = true;
+
+            break;
+        }
+    }
+
+    if (applyScrollBar) {
+        var newWidgetInstance = GetWidgetInstance(widgetInstanceObject.ID);
+
+        ResizeWidgetInstanceBody(newWidgetInstance);
+
+        Utilities.ApplyScrollBar(newWidgetInstance.find('.widgetBody'), showOnApply, scrollCallback);
+    }
+}
+
+function DeleteWidgetInstance(widgetInstance) {
+    var index = GetIndexInWidgetInstanceCollection(widgetInstance);
+
+    if (index != null) {
+        if (widgetsCollection[index].Status == 'new') {
+            // if widget has never been saved then remove from the collection
+            RemoveWidgetInstanceFromCollection(widgetInstance);
+
+        } else {
+            // if widget has been saved then update status to deleted so that it can be removed from the database
+            widgetsCollection[index].Status = 'deleted';
+
+        }
+
+    }
+
+    // remove widget instance from DOM
+    gridster.remove_widget(widgetInstance);
+}
+
+function DestroyWidgetInstanceControlsTooltips(widgetInstance) {
+
+    var controls = $(widgetInstance).find('button[rel="tooltip"]');
+
+    $(controls).each(function () {
+        $(this).tooltip('destroy');
+    });
+}
+
+function GetIndexInWidgetInstanceCollection(widgetInstance) {
+    var index,
+        widgetInstanceID = widgetInstance.attr('data-widget-ID');
+
+    // loop through widget instance collection and return index of match
+    for (var i = 0; i < widgetsCollection.length; i++) {
+        if (widgetsCollection[i].ID == widgetInstanceID) {
+            index = i;
+            break;
+        }
+    }
+
+    return index;
+}
+
+function GetWidgetInstanceFromCollection(widgetInstance) {
+    var widgetInstanceObject,
+        widgetInstanceID = widgetInstance.attr('data-widget-ID');
+
+    // loop through widget instance collection and return oject from collection of match
+    for (var i = 0; i < widgetsCollection.length; i++) {
+        if (widgetsCollection[i].ID == widgetInstanceID) {
+            widgetInstanceObject = widgetsCollection[i];
+            break;
+        }
+    }
+
+    return widgetInstanceObject;
+}
+
+function RemoveWidgetInstanceFromCollection(widgetInstance) {
+    var index = GetIndexInWidgetInstanceCollection(widgetInstance);
+
+    if (index != null) {
+        widgetsCollection.splice(index, 1);
+    }
+}
+
+function AddWidgetInstanceObjectToCollection(widgetInstanceObject) {
+    var getDataMethodName = RetrieveGetDataMethodName(widgetInstanceObject);
+    var resizeMethodName = RetreiveResizeMethodName(widgetInstanceObject);
+    widgetInstanceObject.GetData = Widgets[getDataMethodName];
+    widgetInstanceObject.Resize = Widgets[resizeMethodName];
+    widgetInstanceObject.Callbacks = [];
+    widgetInstanceObject.LocalStorage = [];
+
+    widgetsCollection.push(widgetInstanceObject);
+
+    return widgetInstanceObject;
+}
+
+function ModifyWidgetInstanceStatusInCollection(widgetInstance, newStatus) {
+    var index = GetIndexInWidgetInstanceCollection(widgetInstance);
+
+    if (index != null) {
+        if (widgetsCollection[index].Status != 'new') {
+            widgetsCollection[index].Status = newStatus;
+
+        }
+
+    }
+}
+
+function GetWidgetInstance(widgetInstanceID) {
+    var widgetInstance = $('.gridster ul li[data-widget-ID="' + widgetInstanceID + '"]');
+
+    return widgetInstance;
+}
+
+function GetCommonWidgetHTML(widgetInstanceObject) {
+    // derive widget layout specific names
+    var commonWidgetTemplateTitle = 'CommonWidgetTemplate';
+
+    // get widget layout template and generate html
+    var commonWidgetTemplate = Handlebars.templates['widgets_common'],
+        html = commonWidgetTemplate({ ID: widgetInstanceObject.ID, Title: widgetInstanceObject.Title, Class: widgetInstanceObject.ClassName });
+
+    return html;
+}
+
+function SyncWidgetInstanceCollection() {
+    var changedWidgets = gridster.serialize_changed();
+
+    for (var i = 0; i < widgetsCollection.length; i++) {
+        var widgetInstance = GetWidgetInstance(widgetsCollection[i].ID);
+
+        // get position and size details
+        widgetsCollection[i].SizeX = $(widgetInstance).attr('data-sizex');
+        widgetsCollection[i].SizeY = $(widgetInstance).attr('data-sizey');
+        widgetsCollection[i].Row = $(widgetInstance).attr('data-row');
+        widgetsCollection[i].Col = $(widgetInstance).attr('data-col');
+
+        // if position moved or size changed then change status to edited
+        for (var c = 0; c < changedWidgets.length; c++) {
+            if (widgetsCollection[i].ID == changedWidgets[c].id) {
+                if (widgetsCollection[i].Status != 'new') {
+                    widgetsCollection[i].Status = 'edited';
+
+                    break;
+                }
+
+            }
+
+        }
+
+    }
+}
+
+function RetrieveGetDataMethodName(widgetInstanceObject) {
+    var getDataMethodName = 'GetData_' + widgetInstanceObject.BaseWidgetTitle + '_' + widgetInstanceObject.LayoutSubTitle;
+
+    return getDataMethodName;
+}
+
+function RetrieveSaveConfigMethodName(widgetInstanceObject) {
+    var saveConfigMethodName = 'SaveConfig_' + widgetInstanceObject.BaseWidgetTitle + '_' + widgetInstanceObject.LayoutSubTitle;
+
+    return saveConfigMethodName;
+}
+
+function RetreiveResizeMethodName(widgetInstanceObject) {
+    var resizeMethodName = 'Resize_' + widgetInstanceObject.BaseWidgetTitle + '_' + widgetInstanceObject.LayoutSubTitle;
+
+    return resizeMethodName;
+}
+
+function ResizeWidgetInstanceBody(widgetInstance, width, height) {
+    var widgetInstanceWidth = (width != undefined) ? width : $(widgetInstance).width();
+    var widgetInstanceHeight = (height != undefined) ? height : $(widgetInstance).height();
+    var widgetTitleHeight = $(widgetInstance).find('.widgetTitle').height();
+    var widgetBody = $(widgetInstance).find('.widgetBody');
+    var widgetBodyOuterY = parseInt(widgetBody.css('margin-top')) + parseInt(widgetBody.css('margin-bottom')) + parseInt(widgetBody.css('padding-top')) + parseInt(widgetBody.css('padding-bottom'));
+    var widgetBodyOuterX = parseInt(widgetBody.css('margin-left')) + parseInt(widgetBody.css('margin-right')) + parseInt(widgetBody.css('padding-left')) + parseInt(widgetBody.css('padding-right'));
+
+    var widgetBodyWidth = widgetInstanceWidth - widgetBodyOuterX;
+    var widgetBodyHeight = widgetInstanceHeight - widgetTitleHeight - widgetBodyOuterY;
+
+    var widgetBody = $(widgetInstance).find('.widgetBody');
+
+    widgetBody.css({ 'width': widgetBodyWidth, 'height': widgetBodyHeight });
+}
+
+// widget framework utility functions
+
+Widgets.GetOptionValueByKey = function (widgetInstanceObject, key) {
+    for (var i = 0; i < widgetInstanceObject.Options.length; i++) {
+        if (widgetInstanceObject.Options[i].Key == key) {
+            return widgetInstanceObject.Options[i].Value;
+        }
+    }
+
+    return null;
+}
+
+Widgets.SetOptionValue = function (widgetInstanceObject, key, value) {
+    var optionFound = false;
+
+    for (var i = 0; i < widgetInstanceObject.Options.length; i++) {
+        if (widgetInstanceObject.Options[i].Key == key) {
+            widgetInstanceObject.Options[i].Value = value;
+
+            optionFound = true;
+        }
+    }
+
+    if (!optionFound) {
+        var option = new Object();
+        option.Key = key;
+        option.Value = value;
+
+        widgetInstanceObject.Options.push(option);
+    }
+
+    return widgetInstanceObject;
+}
+
+Widgets.GetLocalStorageValueByKey = function (widgetInstanceObject, key) {
+    for (var i = 0; i < widgetInstanceObject.LocalStorage.length; i++) {
+        if (widgetInstanceObject.LocalStorage[i].Key == key) {
+            return widgetInstanceObject.LocalStorage[i].Value;
+        }
+    }
+
+    return null;
+}
+
+Widgets.SetLocalStorageValue = function (widgetInstanceObject, key, value) {
+    var optionFound = false;
+
+    for (var i = 0; i < widgetInstanceObject.LocalStorage.length; i++) {
+        if (widgetInstanceObject.LocalStorage[i].Key == key) {
+            widgetInstanceObject.LocalStorage[i].Value = value;
+
+            optionFound = true;
+        }
+    }
+
+    if (!optionFound) {
+        var option = new Object();
+        option.Key = key;
+        option.Value = value;
+
+        widgetInstanceObject.LocalStorage.push(option);
+    }
+
+    return widgetInstanceObject;
+}
+
+/*
+* -------------- Page Functions --------------
+*/
+
+/*Events.Subscribe("document-ready", function () {
+
+    Widgets.Init();
+});
+
+Events.Subscribe("window-resize", function () {
+    Widgets.Resize();
+});*/
+
+$(document).ready(function () {
+    if (Widgets.LoadingNeeded) {
+        $(".gridster-loading").show();
+        $(".gridster-loading .loading-spinner").spin();
+    }
+});
+</script>
+</apex:component>

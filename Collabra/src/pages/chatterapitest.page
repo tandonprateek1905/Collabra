@@ -1,0 +1,40 @@
+<apex:page docType="html-5.0" sidebar="false" showHeader="false" applyHtmlTag="false" applyBodyTag="false"
+    standardStylesheets="false" cache="false">
+ 
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript">
+      var SESSION_ID = '{!$Api.Session_ID}';
+      var serverURL = '{!SUBSTITUTE(SUBSTITUTE(LEFT($Api.Partner_Server_URL_210, FIND( '/services', $Api.Partner_Server_URL_260)), 'visual.force', 'salesforce'), 'c.', '')}';
+      // If its a mydomain enabled org, the mydomain name needs to be stripped 
+      var splitURL = serverURL.split(/\./g);
+      if(splitURL.length==4) {
+          splitURL[0] = 'https://';
+          serverURL = splitURL.join(".").replace('.','');
+      }
+      var PATH = 'https://na15.salesforce.com/services/data/v26.0/chatter/users/me';
+      
+      $(function(){
+        $.ajax({
+          cache: false,
+          url: 'https://na15.salesforce.com/services/proxy',
+          beforeSend: function(xhr) {
+            xhr.setRequestHeader('SalesforceProxy-Endpoint', PATH);
+            xhr.setRequestHeader('Authorization', 'OAuth ' + SESSION_ID);
+          },
+          success: function(data,textStatus,jqXHR){
+            $('body').html('Done!  You are <b>' 
+              + data.name 
+              + '</b>, and I, this humble page, retrieved your name from the REST API.');
+          }
+        });
+      });
+    </script>
+  </head>
+ 
+  <body>Loading...</body>
+</html>
+ 
+</apex:page>

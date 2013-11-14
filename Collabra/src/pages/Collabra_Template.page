@@ -1,0 +1,91 @@
+<apex:page showheader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false">
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Collabra :: Intranet made social</title>
+<link href="{!URLFOR($Resource.widget, 'widget/css/jquery.jscrollpane.css')}" type="text/css" rel="stylesheet"  media="screen" />
+<!--<link href="{!URLFOR($Resource.widget, 'widget/css/bootstrap2.css')}" type="text/css" rel="stylesheet"  media="screen" />-->
+<link href="{!URLFOR($Resource.widget, 'widget/css/bootstrap.css')}" type="text/css" rel="stylesheet"  media="screen" />
+
+<link href="{!URLFOR($Resource.widget, 'widget/css/responsive.css')}" type="text/css" rel="stylesheet"  media="screen" />
+<link href="{!URLFOR($Resource.widget, 'widget/css/jquery.gridster.css')}" type="text/css" rel="stylesheet"  media="screen" />
+<script  src="{!URLFOR($Resource.widget, 'widget/JS/jquery.min.js')}" ></script>
+<!-- script  src="{!URLFOR($Resource.widget, 'widget/JS/bootstrap.js')}" ></script -->
+ <script  src="{!URLFOR($Resource.widget, 'widget/JS/bootstrap-tooltip.js')}" ></script>
+<script  src="{!URLFOR($Resource.widget, 'widget/JS/bootstrap-transition.js')}" ></script>
+<script  src="{!URLFOR($Resource.widget, 'widget/JS/bootstrap-modal.js')}" ></script>
+<script  src="{!URLFOR($Resource.widget, 'widget/JS/jquery.jscrollpane.js')}" ></script>
+<script  src="{!URLFOR($Resource.widget, 'widget/JS/jquery.mousewheel.js')}" ></script>
+<script  src="{!URLFOR($Resource.widget, 'widget/JS/mwheelIntent.js')}" ></script>
+  <script  src="{!URLFOR($Resource.widget, 'widget/ckeditor/ckeditor.js')}" ></script>
+   <script  src="{!URLFOR($Resource.widget, 'widget/JS/chosen.jquery.js')}" ></script>
+   <script  src="{!URLFOR($Resource.widget, 'widget/JS/bootbox.js')}" ></script>
+   
+   
+  
+<style>
+::-webkit-scrollbar {
+width: 10px;
+height: 10px;
+display: block; 
+}
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment  {
+height: 30px;
+background-color: transparent;
+}
+::-webkit-scrollbar-track-piece  {
+background-color: #3b3b3b;
+-webkit-border-radius: 16px;
+}
+::-webkit-scrollbar-thumb:vertical {
+height: 50px;
+background-color: #666;
+border: 1px solid #eee;
+-webkit-border-radius: 6px;
+}
+.pageheader {
+margin-top:20px;
+margin-bottom:20px;
+border:0px;
+}
+.logo {
+float:left;
+}
+.back2sfmenu{
+display: block;
+float: right;
+}
+.copyright {
+font-weight: 400;
+font-size: 10px;
+color: #9a9a9a;
+margin: 5px 0 10px;
+line-height: 14px;
+}
+h1, h2, h3, h4, h5, h6{
+ display:inherit;
+}
+.btn-success{
+    background-image: linear-gradient(to bottom,#62c462,#51a351) !important;
+    font-size: 12px !important;
+	font-weight: normal !important;
+	line-height: 20px !important;
+ }  
+ .gridster>ul>li{
+  
+ } 
+</style>
+</head>
+<body>
+<div class="wrapper" style="margin: 0px auto 30px;">
+ <div id="main-content" class="container">
+ <c:Collabra_Header />
+  
+  <apex:insert name="content_body"></apex:insert>
+  <c:Collabra_Footer />
+  </div>
+  </div>
+  </body>
+  </html>
+</apex:page>

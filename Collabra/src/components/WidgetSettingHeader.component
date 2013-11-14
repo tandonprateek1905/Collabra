@@ -1,0 +1,24 @@
+<apex:component >
+<apex:attribute required="true" type="String" name="Title" description="Message"/>
+
+<div class="widgetHeader" style="position: absolute; top: 0px; right: 0px; left: 0px;display:none;">
+    <div class="widget-config">
+       <!-- <div class="widgetResizeHeader btn-group pull-left btn-edit" style="margin: 5px 0 0 5px;">
+        <button id="resizeWidgetSmallerX" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Decrease horizontal widget size" disabled="disabled"><i class="iconextra-expandleftalt"></i></button>
+        <button id="resizeWidgetBiggerX" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Increase horizontal widget size"><i class="iconextra-expandrightalt"></i></button>
+        <button id="resizeWidgetSmallerY" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Decrease vertical widget size" disabled="disabled"><i class="iconextra-expandupalt"></i></button>
+        <button id="resizeWidgetBiggerY" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Increase vertical widget size"><i class="iconextra-expanddownalt"></i></button>
+    </div>  -->
+    
+       <div class="widgetConfigHeader btn-group pull-right btn-edit" style="margin: 5px 5px 0 0;">
+        <button id="configWidget" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Edit widget content"><i class="iconextra-cog"></i></button>
+        <button id="deleteWidget" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Permanently delete widget"><i class="icon-remove-sign"></i></button>
+    </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+  <div class="widgetTitle">
+	    <h2>{!Title}</h2>
+	</div> 
+
+</apex:component>

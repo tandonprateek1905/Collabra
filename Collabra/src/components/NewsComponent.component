@@ -1,0 +1,86 @@
+<apex:component >
+
+<!-- <div class="widgetHeader" style="position: absolute; top: 0px; right: 0px; left: 0px;display:none;">
+    <div class="widget-config">
+    <!--<div class="widgetResizeHeader btn-group pull-left btn-edit" style="margin: 5px 0 0 5px;">
+        <button id="resizeWidgetSmallerX" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Decrease horizontal widget size" disabled="disabled"><i class="iconextra-expandleftalt"></i></button>
+        <button id="resizeWidgetBiggerX" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Increase horizontal widget size"><i class="iconextra-expandrightalt"></i></button>
+        <button id="resizeWidgetSmallerY" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Decrease vertical widget size" disabled="disabled"><i class="iconextra-expandupalt"></i></button>
+        <button id="resizeWidgetBiggerY" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Increase vertical widget size"><i class="iconextra-expanddownalt"></i></button>
+    </div>
+    <div class="widgetConfigHeader btn-group pull-right btn-edit" style="margin: 5px 5px 0 0;">
+        <button id="configWidget" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Edit widget content"><i class="iconextra-cog"></i></button>
+        <button id="deleteWidget" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Permanently delete widget"><i class="icon-remove-sign"></i></button>
+    </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="widgetTitle">
+    <h2>Latest news</h2>
+</div>-->
+<c:WidgetSettingHeader Title="Latest News"/>
+<div id="widgetBody" class="widgetBody">
+<ul class="unstyled">
+    <li class="content-widget-item">
+        <div class="pull-left content-widget-list-image-container">
+            <img src="https://c.na14.content.force.com/profilephoto/729d00000009npd/T" />
+        </div>
+        <div class="content-widget-list-details-container">
+            <div>
+                <a href="/Interact/Pages/Content/Document.aspx?id=1207">Millar Profits Up</a>
+            </div>
+               <div>Macrohard announce OS will be compatible with Millar chips. </div>
+           </div>
+    </li>
+    
+    <li class="content-widget-item">
+        <div class="pull-left content-widget-list-image-container">
+            <img src="https://c.na14.content.force.com/profilephoto/729d00000009npd/T" />
+        </div>
+        <div class="content-widget-list-details-container">
+            <div>
+                <a href="/Interact/Pages/Content/Document.aspx?id=1174">Chamber of Commerce Award</a>
+            </div>
+            
+                
+                <div>IRG named regional winner of Award for Excellence.</div>
+                
+            
+
+        </div>
+    </li>
+    
+    <li class="content-widget-item">
+        <div class="pull-left content-widget-list-image-container">
+            <img src="https://c.na14.content.force.com/profilephoto/729d00000009npd/T" />
+        </div>
+        <div class="content-widget-list-details-container">
+            <div>
+                <a href="/Interact/Pages/Content/Document.aspx?id=1182">Voted Consultancy Company</a>
+            </div>
+          <div>IRG Spain voted Best European mobile consultant for…</div>
+       </div>
+    </li>
+    
+    <li class="content-widget-item" style="visibility: hidden;">
+        <div class="pull-left content-widget-list-image-container">
+            <img src="https://c.na14.content.force.com/profilephoto/729d00000009npd/T" />
+        </div>
+        <div class="content-widget-list-details-container">
+            <div>
+                <a href="/Interact/Pages/Content/Document.aspx?id=1178">Dogstar Partnership</a>
+            </div>
+            
+                
+                <div>Spanish cloud storage provider, announced partnership with…</div>
+                
+            
+
+        </div>
+    </li>
+ </ul>
+
+</div>
+
+
+</apex:component>

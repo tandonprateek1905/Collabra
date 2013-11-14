@@ -1,0 +1,188 @@
+<apex:page controller="HomePageController" showheader="false" sidebar="false" standardStylesheets="true" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false">
+<apex:composition template="Collabra_Template">
+<apex:define name="content_body">
+<c:overlay description="Please Wait...."/>
+<apex:outputpanel id="container">
+<script  src="{!URLFOR($Resource.widget, 'widget/JS/jquery.gridster.js')}" ></script>
+<script>
+   $(function(){ //DOM Ready
+ 
+  /*  $(".gridster ul").gridster({
+      //  widget_margins: [10, 10],
+        //widget_base_dimensions: [140, 140]
+    });*/
+    Widgets.Init();
+    showEditLayout(false);
+    $('.scroll-pane').jScrollPane();
+});
+function initialize(editmode){
+$('.scroll-pane').jScrollPane();
+Widgets.Init();
+showEditLayout(editmode);
+hideOverLay();
+}
+   </script>
+
+<!--  <style type="text/css" class="gridster-styles"> [data-col="5"] { left:1173px;}  [data-col="4"] { left:881px;}  [data-col="3"] { left:589px;}  [data-col="2"] { left:297px;}  [data-col="1"] { left:5px;}  [data-row="32"] { top:8995px;}  [data-row="31"] { top:8705px;}  [data-row="30"] { top:8415px;}  [data-row="29"] { top:8125px;}  [data-row="28"] { top:7835px;}  [data-row="27"] { top:7545px;}  [data-row="26"] { top:7255px;}  [data-row="25"] { top:6965px;}  [data-row="24"] { top:6675px;}  [data-row="23"] { top:6385px;}  [data-row="22"] { top:6095px;}  [data-row="21"] { top:5805px;}  [data-row="20"] { top:5515px;}  [data-row="19"] { top:5225px;}  [data-row="18"] { top:4935px;}  [data-row="17"] { top:4645px;}  [data-row="16"] { top:4355px;}  [data-row="15"] { top:4065px;}  [data-row="14"] { top:3775px;}  [data-row="13"] { top:3485px;}  [data-row="12"] { top:3195px;}  [data-row="11"] { top:2905px;}  [data-row="10"] { top:2615px;}  [data-row="9"] { top:2325px;}  [data-row="8"] { top:2035px;}  [data-row="7"] { top:1745px;}  [data-row="6"] { top:1455px;}  [data-row="5"] { top:1165px;}  [data-row="4"] { top:875px;}  [data-row="3"] { top:585px;}  [data-row="2"] { top:295px;}  [data-row="1"] { top:5px;}  [data-sizey="1"] { height:280px;} [data-sizey="2"] { height:570px;} [data-sizey="3"] { height:860px;} [data-sizey="4"] { height:1150px;} [data-sizey="5"] { height:1440px;} [data-sizey="6"] { height:1730px;} [data-sizey="7"] { height:2020px;} [data-sizey="8"] { height:2310px;} [data-sizey="9"] { height:2600px;} [data-sizey="10"] { height:2890px;} [data-sizey="11"] { height:3180px;} [data-sizey="12"] { height:3470px;} [data-sizey="13"] { height:3760px;} [data-sizey="14"] { height:4050px;} [data-sizey="15"] { height:4340px;} [data-sizey="16"] { height:4630px;} [data-sizey="17"] { height:4920px;} [data-sizey="18"] { height:5210px;} [data-sizey="19"] { height:5500px;} [data-sizey="20"] { height:5790px;} [data-sizey="21"] { height:6080px;} [data-sizey="22"] { height:6370px;} [data-sizey="23"] { height:6660px;} [data-sizey="24"] { height:6950px;} [data-sizey="25"] { height:7240px;} [data-sizey="26"] { height:7530px;} [data-sizey="27"] { height:7820px;} [data-sizey="28"] { height:8110px;} [data-sizey="29"] { height:8400px;} [data-sizey="30"] { height:8690px;} [data-sizey="31"] { height:8980px;} [data-sizex="1"] { width:282px;} [data-sizex="2"] { width:574px;} [data-sizex="3"] { width:866px;} [data-sizex="4"] { width:1158px;} [data-sizex="5"] { width:1450px;} [data-sizex="6"] { width:1742px;}</style> -->
+
+            
+            
+            
+
+           
+                <div class="clearfix">
+                    <div class="row">
+                        
+                    <div id="panelFormHolder">
+    
+                        
+    
+    <div id="body_divWidgets" class="section-homepage">
+        <div id="body_divGridsterControls" class="span12">
+           <div id="body_pageStyle" class="page">
+                <article>
+                    <header>
+                        <h1 id="body_sectionTitle"></h1>
+                    </header>
+                    
+                    <section class="widget-mobile-container">
+                        <div id="content-all" class="row">
+                            <div id="body_divGridster" class="span12">
+                                <div class="gridster-loading">
+                                    <div class="loading-background"></div>
+                                    <div class="loading-spinner"></div>
+                                </div>
+                                <div class="gridster ready">
+                                  <ul id="pageLayoutItems" style="position: relative; height: 2320px;">
+                                        <apex:repeat value="{!lstWidget}" var="objWidget">
+                                            <li class="Widget_Content_List gs_w normal player-revert widgetD" data-comp-name='{!objWidget.strWidgetName}' data-col="{!objWidget.strDataCol}" data-row="{!objWidget.strDataRow}" data-sizex="{!objWidget.strDataSizeX}" data-sizey="{!objWidget.strDataSizeY}" style="display: list-item; position: absolute;" data-widget-ID="{!objWidget.strWidgetId}">
+                                              <c:NewsComponent rendered="{!objWidget.strWidgetName=='News'}"/>
+                                              <c:BlogComponent rendered="{!objWidget.strWidgetName=='Blog'}"/>
+                                               <c:chatterFeedDetail rendered="{!objWidget.strWidgetName=='Chatter'}"/> 
+                                            </li>
+                                        
+                                        </apex:repeat>
+                                        
+                                    <apex:repeat value="{!lstUserDefinedWidget}" var="objuserWidget">
+                                         <li class="Widget_Content_List gs_w normal player-revert widgetD userdefined"  data-col="{!objuserWidget.strDataCol}" data-row="{!objuserWidget.strDataRow}" data-sizex="{!objuserWidget.strDataSizeX}" data-sizey="{!objuserWidget.strDataSizeY}" style="display: list-item; position: absolute;" data-widget-ID="{!objuserWidget.strWidgetId}">
+                                          <!-- <div class="widgetHeader" style="position: absolute; top: 0px; right: 0px; left: 0px;display:none;">
+                                            <div class="widget-config">
+                                               <div class="widgetConfigHeader btn-group pull-right btn-edit" style="margin: 5px 5px 0 0;">
+                                                <button id="configWidget" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Edit widget content"><i class="iconextra-cog"></i></button>
+                                                <button id="deleteWidget" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Permanently delete widget"><i class="icon-remove-sign"></i></button>
+                                            </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                          <div class="widgetTitle">
+                                                <h2>{!objuserWidget.strWidgetTitle}</h2>
+                                            </div> -->
+                                            <c:WidgetSettingHeader Title="{!objuserWidget.strWidgetTitle}"/>
+                                           <apex:outputpanel rendered="{!objuserWidget.strUserWidgetType=='Link'}">
+                                              <div id="widgetBody" class="widgetBody">
+                                                 <iframe seamless='seamless' src='{!objuserWidget.strUserWidgetLinkUrl}' style='height:95%;width:95%;border:0px;'></iframe>
+                                               </div>
+                                           </apex:outputpanel>
+                                             <apex:outputpanel rendered="{!objuserWidget.strUserWidgetType=='Text'}">
+                                               <div id="widgetBody" class="widgetBody">
+                                                 <apex:outputtext rendered="true" escape="false" value="{!objuserWidget.strUserDefinedText}"> </apex:outputtext>
+                                                
+                                               </div> 
+                                           </apex:outputpanel>
+                                         </li>
+                                    </apex:repeat>  
+                                        
+                                    </ul>
+                               </div>
+                          </div>
+                        </div>
+                    </section>
+                    <section id="body_WidgetSection" class="container-section ">
+                        <div id="page-edit" class="page-edit hidden-phone hidden-tablet">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="span6 offset6 pull-right" style="position:relative;">
+                                        <div class="pull-right">
+                                            <!--<a href="#na" id="closeEdit" class="close" style="padding: 6px 0 0 5px;">×</a>-->
+                                            <a data-target="#AddWidgetSelectionList" id="AddWidgetListSelection" role="button" class="add-layout" style="display: none;" href="{!$Page.widgetSelectionPage}" data-toggle="modal" data-placement="top" rel="tooltip" data-original-title="Add Widget"><i class="icon-"></i><span>Add Widget</span></a> 
+                                            <button id="EditLayout" class="edit-layout" data-placement="top" rel="tooltip" data-original-title="Edit Homepage Layout" style="display: block;"><i class="icon-"></i><span>Edit Homepage Layout</span></button>
+                                            <button id="SaveLayout" class="save-layout" style="display: none;" data-placement="top" rel="tooltip" data-original-title="Save Layout"><span>Save Layout</span></button>
+                                            <button id="CancelLayout" class="cancel-layout" style="display: none;" data-placement="top" rel="tooltip" data-original-title="Cancel"><i class="icon-"></i><span>Cancel</span></button>
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div id="AddWidgetSelectionList" class="modal hide fade modal-large " data-backdrop='true' aria-hidden='false' data-refresh="true">
+                                            <div class="modal-inner">
+                                                <div class="modal-header">
+                                                   <h3>Choose Widget</h3> <button type="button" style="position: absolute;right: 10px;top: 5px;" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                   
+                                                </div>
+                                                 <div class="modal-footer">
+                                                   
+                                                 </div>
+                                            </div>
+                          </div> 
+                          
+                          <div data-refresh="true" id="ConfigWidgetInstance" class="modal hide fade modal-large in" data-widgetinstanceid="new3" data-templatetitle="FreeText" data-widgetid="126" data-widgetinstancestatus="new" style="display: none;" aria-hidden="true">
+                                    <div class="modal-inner">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                            <h3>Configure Widget</h3>
+                                        </div>
+                                        <div class="modal-body">
+                                        </div>
+                                          <div class="modal-footer">
+                                              <button id="ConfigWidgetSave" class="btn btn-block btn-success" onclick="getWidgetSearchResults(1)">Save Widget</button>
+                                         </div>
+                                      </div>
+                                 </div>
+                                 
+                     </section>
+              </article>
+           </div>
+       </div>
+     </div>
+    </div>
+   </div>
+</div>
+<div id="confirmModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- dialog body -->
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+           Do you want remove this component from your layout?
+        </div>
+      <!-- dialog buttons -->
+      <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id='removeComponent'>Yes</button>
+          <button type="button" class="btn btn-primary" id='cancelAction'>No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<apex:form >
+
+ <apex:actionfunction name="saveUserConfiguration" action="{!saveUserConfiguration}" rerender="container" oncomplete="initialize(false);">
+    <apex:param value="" name="userconfig" assignTo="{!strUserConfigDetail}"/>
+ </apex:actionfunction>
+  <apex:actionfunction name="inActiveWidget" action="{!inActiveOrActiveWidget}" rerender="container" oncomplete="initialize(true);">
+      <apex:param value="" name="userconfig" assignTo="{!strUserConfigDetail}"/>
+      <apex:param value="" name="widgetInstanceID" assignTo="{!strWidgetId}"/>
+ </apex:actionfunction>
+ <apex:actionfunction name="resetWidget" rerender="container" oncomplete="initialize(false);">
+ </apex:actionfunction>
+</apex:form>
+<c:WidgetJs />
+
+
+</apex:outputpanel>
+</apex:define>
+</apex:composition>
+</apex:page>

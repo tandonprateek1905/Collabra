@@ -1,0 +1,17 @@
+<apex:page showheader="false" sidebar="false" standardStylesheets="false">
+    <link href="{!URLFOR($Resource.widget, 'widget/css/chosen.css')}" type="text/css" rel="stylesheet"  media="screen" />
+    
+  <c:NewsConfigrationComponent widgetId="{!$CurrentPage.parameters.id}"/>
+ <script>
+    $(document).ready(function(){
+        $('.selectedclass').each(function(){
+          $(this).attr('selected',true);
+        });
+    
+         $("#select_box1").chosen({width: "95%"});
+     });
+     
+     
+     
+</script>
+</apex:page>

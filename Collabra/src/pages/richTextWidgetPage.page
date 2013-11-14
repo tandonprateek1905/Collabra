@@ -1,0 +1,29 @@
+<apex:page showheader="false" sidebar="false" standardStylesheets="false">
+  <c:richTextWidgetComponent />
+  <script>
+  // var txtid="'"+$("[id$=ckeditor]");
+    var txtid=""+$(".ckeditor").attr('id');
+    console.log(CKEDITOR.instances[txtid]);
+    if (CKEDITOR.instances[txtid]) {
+        console.log(CKEDITOR.instances[txtid]);
+       delete CKEDITOR.instances[txtid];//.destroy();
+     }
+   
+   
+   CKEDITOR.replace(""+txtid, {
+            toolbarStartupExpanded: false,
+            toolbarCanCollapse: true,
+            resize_enabled: false,
+            height: '170px',
+            language: 'en-GB'
+       });
+     /*  CKEDITOR.replaceAll('ckeditor'); 
+            CKEDITOR.editorConfig = function( config ) {
+            config.toolbarStartupExpanded= false;
+            config.toolbarCanCollapse= true;
+            config.resize_enabled= false;
+            config.height= '170px';
+            config.language='en-GB';
+            }*/
+  </script>
+</apex:page>

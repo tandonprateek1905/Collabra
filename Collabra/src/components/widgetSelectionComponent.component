@@ -1,0 +1,252 @@
+<apex:component allowDML="true">
+<apex:form >
+ <div class="p_srch pull-left" id="p_srch">
+    <div class="input-prepend">
+        <div class="well well-small form-search">
+            <span class="add-on">Search:</span><input id="txtWidgetsearch" type="text" style="width: 580px" />
+            
+            <div>
+            </div>
+        </div>
+    </div>
+</div>
+<ol id="WidgetSelectionItems" class="unstyled pull-left">       
+   <!--  <li data-widgetid="16" data-templatetitle="AbsenceBooking" class="widget-AbsenceBooking">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Absence Booking <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    
+                      The Absence Manager widget automatically displays forthcoming booked absences and days left to book for the individual user.
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="1" data-templatetitle="Content" class="widget-Content">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Content <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    Elegantly bring together different types of content into a single widget view.
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">5</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="123" data-templatetitle="Menus" class="widget-Menus">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Custom Menu <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    The Custom Menu widget allows you to create your own menu of links within a widget
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="19" data-templatetitle="FootballLeague" class="widget-FootballLeague">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Football League <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    This widget presents an overview of the people with the most points from the football series and link to the Module.
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>-->
+       
+    <li data-widgetid="126" data-templatetitle="FreeText" class="widget-FreeText">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Free Text <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    Create your own Free Text widget using the Rich Text Editor.
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">3</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="53" data-templatetitle="Gallery" class="widget-Gallery">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Gallery <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    Rotate through images held in a specific Gallery.
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">2</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+      <li data-widgetid="127" data-templatetitle="iFrame" class="widget-iFrame">
+            <div class="widget-selection-desc widget-selection">
+                <h2>iFrame <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    The iFrame widget can display any external HTML page inside an HTML iFrame component
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+  <!--  <li data-widgetid="105" data-templatetitle="InfluenceScore" class="widget-InfluenceScore">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Influence Score <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    Influence score measures influence based on your ability to drive action. Every time you create content you influence others.
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="118" data-templatetitle="Profile" class="widget-Profile">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Profile <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    Display Anniversaries, New Starters, Profiles within networks.
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="93" data-templatetitle="QuestionBank" class="widget-QuestionBank">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Question Bank <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    Inform users of document quizzes which they haven't yet taken (or specifically mandatory quizzes they have not taken).
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="130" data-templatetitle="Rewards" class="widget-Rewards">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Rewards <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    Being able to positively and transparently reward anyone in your organisation is a great way to encourage collaboration and raise moral.
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="17" data-templatetitle="RoomAndResource" class="widget-RoomAndResource">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Room and Resource <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    With the Room and Resource module you can use this widget to let others know if external visitors will be in the office using their meeting rooms.
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="4" data-templatetitle="RSS" class="widget-RSS">
+            <div class="widget-selection-desc widget-selection">
+                <h2>RSS Reader <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    This widget allows you to display news feeds on your Dashboard. It supports both RSS and Atom feeds.
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="112" data-templatetitle="Searches" class="widget-Searches">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Searches <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    Displaying searches undertaken within Interact
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="107" data-templatetitle="TimeLine" class="widget-TimeLine">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Timeline <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    The Interact Timeline is a way of discovering events in chronological order which maybe of interest to the user.
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="129" data-templatetitle="Twitter" class="widget-Twitter">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Twitter <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    Embed a configurable Twitter widget into your homepage.
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="11" data-templatetitle="Polls" class="widget-Polls">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Voting &amp; Polling <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    Integrate the voting and polling widget to canvas opinion.
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>
+       
+    <li data-widgetid="113" data-templatetitle="WebSearch" class="widget-WebSearch">
+            <div class="widget-selection-desc widget-selection">
+                <h2>Web Search <b class="caret"></b></h2>
+                <div class="comment widget-selection">
+                    Embed External Web Search: Google, Bing
+                    <div class="options widget-selection">
+                        <p class="muted">Available layouts: <span class="label label-info">1</span></p>
+                    </div>
+                </div>
+                <i class="iconsmall"></i>
+            </div>
+    </li>-->
+</ol>
+
+
+</apex:form>
+</apex:component>

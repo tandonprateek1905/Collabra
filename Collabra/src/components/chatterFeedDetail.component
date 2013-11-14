@@ -1,0 +1,77 @@
+<apex:component controller="DemoController" allowDML="true">
+<div id="widgetBody" class='widgetBody scroll-pane'>
+   <c:WidgetSettingHeader Title="Chatter"/>
+   <apex:form >
+   <apex:inputText value="{!feedItemText}" id="feedItemInput" styleClass="inputBox" />
+     <apex:commandLink styleClass="feedItemInputButton" reRender="referesh" action="{!postItem}" value="Post">
+     </apex:commandLink>
+    
+ <apex:outputpanel id="referesh">
+  <apex:repeat value="{!newsFeedForDisplay}" var="feedItemInfo">
+    <div class="row-fluid">
+      <div>     
+        <div style="display:inline-block;vertical-align:top;">
+          <apex:image style="margin:4px" width="25" url="{!feedItemInfo.feedItem.photoUrl}"/>
+        </div>
+              
+        <div style="display:inline-block1;vertical-align:top;width:350px">
+           <b>{!feedItemInfo.userName} <!-- --- {!feedItemInfo.likeCount} --></b><br/>
+           <apex:outputText value="{!feedItemInfo.formattedText}" escape="false"/>
+                  
+           <apex:outputPanel rendered="{!IF(feedItemInfo.linkUrl == null, false, true)}" >              
+             <b><a href="{!feedItemInfo.linkUrl}">{!feedItemInfo.linkTitle}</a></b>             
+           </apex:outputPanel>
+         </div>
+
+         <apex:outputPanel rendered="{!IF(feedItemInfo.contentDownloadUrl != null && feedItemInfo.imageUrl != null && feedItemInfo.hasImagePreview, true, false)}" >          
+           <apex:image style="margin:4px" width="90" url="{!feedItemInfo.imageUrl}"/>
+           <a href="{!feedItemInfo.contentDownLoadUrl}">{!feedItemInfo.contentTitle }</a>                 
+         </apex:outputPanel>
+       </div>
+       
+       <div>
+       		<div style="width:5%;float:left;">
+       			<apex:commandLink value="Like"/>
+       		</div>
+       		<div style="width:10%;float:left;">
+       			<apex:commandLink value="Comment"/>
+       		</div>
+       </div>
+
+       <apex:outputPanel rendered="{!IF(feedItemInfo.commentCount > 0, true, false)}">
+         <div style="width:85%;padding:4px;font-size:0.95em;position:relative;left:3em;" >
+           <apex:repeat value="{!feedItemInfo.comments}" var="commentInfo">
+             <div style="margin:4px;padding:4px;width:100%;">
+               <div style="display:inline-block;vertical-align:top;">
+                 <apex:image style="margin:4px" width="25" url="{!commentInfo.comment.user.photo.smallPhotoUrl}"/>
+               </div>
+
+               <div style="display:inline-block;vertical-align:top;width:250px">
+                 <b>{!commentInfo.userName}</b><br/>
+                 <apex:outputText value="{!commentInfo.formattedText}" escape="false"/>
+               </div>
+				
+               <apex:outputPanel rendered="{!IF(commentInfo.imageUrl == null, false, true)}" >
+                 <div style="display:inline-block;vertical-align:top;float:right;position:relative;right:1em" >
+                   <apex:image style="margin:4px" width="100" url="{!commentInfo.imageUrl}"/>
+                 </div>
+					
+                 <div style="clear: both;"/>
+               </apex:outputPanel>
+               <!-- <div style="width:5%;float:left;">
+       			<apex:commandLink value="Like"/>
+       		</div> -->
+             </div>
+           </apex:repeat>
+         </div>
+       </apex:outputPanel>
+     </div>
+   </apex:repeat>
+   </apex:outputpanel>
+   </apex:form>
+  </div>
+   <apex:form >
+      <apex:actionPoller reRender="referesh" interval="5" enabled="false"/>
+</apex:form>
+
+</apex:component>

@@ -1,0 +1,83 @@
+<apex:component allowDML="true" controller="richTextWidgetController">
+
+<apex:form id="txtData">
+
+<div id='ConfigWidgetInterface'>
+<section class="WidgetFreeText_Config">
+    <div class="row-fluid">
+        <div class="span12">
+            <section id="WidgetFreeText_ConfigOptions" class="ContentWidgetConfigBody FreeTextConfigBody">
+                    <div class="tabbable">
+                       <ul class="nav nav-tabs">
+                         <li class="active"><a href="#richText" data-toggle="tab">Configuration</a></li>
+                      </ul>
+                    <div class="tab-content">
+                    <div class="tab-pane active" id="richText">
+                        <div class="row-fluid">
+                            <div class="span6 nbb">
+                                <section>  
+                                    <h4>Title<a class="whatsthis" href="#" data-placement="right" rel="tooltip" data-target="#" role="button" data-original-title="If entered the title will appear at the top of the widget. It is typically used as a general description of the theme of the content displayed in the widget">[?]</a></h4>
+                                    <!--  <input id="WidgetFreeText_Title" type="text" autofocus="" class="span12" />-->
+                                     <apex:inputText value="{!objWidgetModel.strWidgetName}" styleclass="span12"/>
+                               
+                                </section> 
+                            </div>
+                            <div class="span6 nbb"> 
+                                <section>
+                                    <h4 class="sub-title"><span>Sub Title</span>
+                                         <a class="whatsthis" href="#" data-placement="right" rel="tooltip" data-target="#" role="button" data-original-title="Display a sub title below the widget title.">[?]</a>
+                                    </h4>
+                                  
+                      <!--  <input id="WidgetFreeText_ElementTitle" type="text" class="span12" />-->
+                       <apex:inputText value="{!objWidgetModel.strWidgetTitle}" styleclass="span12"/>
+                       
+                    <ul id="FreeTextTabs" class="nav nav-pills" style="width: 100%; display: none;">
+                        <li class="active" data-tab-id="0"><a class="tab-click" data-tab-id="0" href="#" data-toggle="tab">1</a></li><li class="" data-tab-id="1"><a class="tab-click selected" data-tab-id="1" href="#" data-toggle="tab">2</a></li><li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Options <b class="caret"></b></a>
+                            <ul id="tabOptions" class="dropdown-menu" role="menu" aria-labelledby="drop4">
+                                <li>
+                                    <a id="addTab" role="menuitem" href="#">Add Tab</a>
+                                </li>
+                                <li><a id="removeTab" role="menuitem" tabindex="-1" href="#">Remove Tab</a></li>
+                            </ul>
+                        </li>
+                    </ul>                     
+                    <!-- <a id="applyText" href="#" class="button pull-right">Apply</a> -->
+
+                            
+                                </section>
+                            </div>
+
+                            <div class="row-fluid">
+                                <div class="span12 ntb">
+                                    <h4 class="description-title"><span>Text</span>
+                                          <a class="whatsthis" href="#" data-placement="right" rel="tooltip" data-target="#" role="button" data-original-title="Enter the text to be displayed in this widget.">[?]</a></h4>
+                                        <div contenteditable="true"> 
+                                          <apex:inputtextarea value="{!objWidgetModel.strUserDefinedText}" styleClass="ckeditor" richtext="false" id="ckeditor"/>
+                                        </div>
+                                         <!-- <textarea id='WidgetFreeText_ElementText' value="{!strTextContent}" styleClass="ckeditor" richtext="false"/>-->
+                                         
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                 
+               </div>
+</div>
+</section>
+</div>
+</div>
+</section>
+</div>
+<apex:commandbutton value="Save" action="{!saveUserTextDetail}" reRender="txtData" onclick="if(!updateContent()) return false;" /> 
+<script>
+  function updateContent(){
+  var txtid1=""+$(".ckeditor").attr('id');
+  var objEditor = CKEDITOR.instances[''+txtid1];
+$('.ckeditor').val(objEditor.getData());
+return true;
+  }
+</script>
+</apex:form>
+
+</apex:component>

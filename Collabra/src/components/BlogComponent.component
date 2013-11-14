@@ -1,0 +1,98 @@
+<apex:component >
+  <div class="widgetHeader" style="position: absolute; top: 0px; right: 0px; left: 0px;display:none;">
+    <div class="widget-config">
+      <div class="widgetConfigHeader btn-group pull-right btn-edit" style="margin: 5px 5px 0 0;">
+        <button id="configWidget" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Edit widget content"><i class="iconextra-cog"></i></button>
+        <button id="deleteWidget" type="button" class="btn btn-small" aria-hidden="true" data-placement="bottom" rel="tooltip" data-original-title="Permanently delete widget"><i class="icon-remove-sign"></i></button>
+    </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+<div class="widgetTitle">
+    <h2>Who's blogging?</h2>
+</div>
+<div id="widgetBody" class="widgetBody" style="height: 237px;">
+<ul class="unstyled">
+     <li class="content-widget-item">
+        <div class="pull-left content-widget-list-image-container">
+            <img src="https://c.na14.content.force.com/profilephoto/729d00000009npd/T" />
+        </div>
+        <div class="content-widget-list-details-container">
+            <div>
+                <a href="/Interact/Pages/Modules/Blog/Blog.aspx?person=264#post44">What's been going on recently?</a>
+            </div>
+            
+                
+            
+            
+            <div>
+                by <a href="/Interact/Pages/Modules/Directory/Entry.aspx?person=264">John Richards</a>
+            </div>
+            
+            <div class="social-tools">
+                <div class="row-fluid">
+                <div class="span6 pull-left">
+                
+                <time class="timeago pull-left" datetime="2013-07-30T00:00:00.000+01:00">2 months ago</time>
+                
+                </div>
+                <div class="span6 pull-right">
+                
+                <span class="pull-right count">
+                    <span title="2 Comment(s)">
+                        <i class="iconextra-comment"></i>       
+                        (2)
+                    </span>
+                    
+                </span>
+                
+            </div>
+        </div>
+            </div>
+        </div>
+    </li>
+    
+    <li class="content-widget-item">
+        <div class="pull-left content-widget-list-image-container">
+            <img src="https://c.na14.content.force.com/profilephoto/729d00000009npd/T" />
+        </div>
+        <div class="content-widget-list-details-container">
+            <div>
+                <a href="/Interact/Pages/Modules/Blog/Blog.aspx?person=281#post20">Communicating Our Brand</a>
+            </div>
+            
+                
+            
+            
+            <div>
+                by <a href="/Interact/Pages/Modules/Directory/Entry.aspx?person=281">James Harris</a>
+            </div>
+            
+            <div class="social-tools">
+                <div class="row-fluid">
+                <div class="span6 pull-left">
+                
+                <time class="timeago pull-left" datetime="2013-07-29T00:00:00.000+01:00">2 months ago</time>
+                
+                </div>
+                <div class="span6 pull-right">
+                
+                <span class="pull-right count">
+                    <span title="3 Comment(s)">
+                        <i class="iconextra-comment"></i>       
+                        (3)
+                    </span>
+                    
+                </span>
+                
+            </div>
+        </div>
+            </div>
+        </div>
+    </li>
+ </ul>
+</div>
+
+
+</apex:component>

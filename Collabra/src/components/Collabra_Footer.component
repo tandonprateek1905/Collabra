@@ -1,0 +1,7 @@
+<apex:component >
+<footer>
+<div class="copyright">
+2012 © Simplion Technologies Inc. Salesforce and Force.com are trademarks of salesforce.com, inc. and are used here with permission.Terms of use.
+</div>
+</footer>
+</apex:component>

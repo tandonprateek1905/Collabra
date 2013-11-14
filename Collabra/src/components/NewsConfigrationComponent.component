@@ -1,0 +1,57 @@
+<apex:component controller="ServerProxyToSaveData">
+<apex:attribute required="true" type="String" name="widgetId" description="Message"/>
+<div id='ConfigWidgetInterface'>
+<section class="WidgetFreeText_Config">
+	<div class="row-fluid">
+        <div class="span12">
+            <section id="WidgetFreeText_ConfigOptions" class="ContentWidgetConfigBody FreeTextConfigBody">
+                    <div class="tabbable">
+                       <ul class="nav nav-tabs">
+                         <li class="active"><a href="#richText" data-toggle="tab">Configuration</a></li>
+                      </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active limit-container" id="tab3"> 
+                            <div class="row-fluid">
+                                <div class="span6" style='overflow:visible;'>
+                                                                             
+                                    <div>
+                                         <section>
+                                            <h4>Group<a class="whatsthis" href="#" data-placement="right" rel="tooltip" data-target="#" role="button" data-original-title="Choose the group of news you want this widget to display">[?]</a></h4>
+                                               <div>
+                                                
+                                                 <select data-placeholder="Choose a Group..." id='select_box1' styleclass="select_box1 chosen-select-deselect " style="width:350px;" multiple='true' tabindex="3">
+										                <option value=""></option>
+										               <apex:repeat value="{!lstGroup}" var="objGroup">
+										                   <option value="{!objGroup.strGroupID}"  class="{!IF(objGroup.isSelectedGroup,'selectedclass' ,'')}">{!objGroup.strGroupName}</option>
+										               </apex:repeat>
+										            </select>  
+                                               </div>
+                                           </section>
+                                        </div></div>
+                                  </div>
+                             </div>
+                        </div>
+                 </div>
+             </section>
+          </div>
+       </div>
+  </section>
+</div>
+ <script>
+ function saveNewsUserDetail(widgetId){
+      //alert($("#select_box1").chosen().val());
+      var selectedgroup=($("#select_box1").chosen().val()).toString();
+             Visualforce.remoting.Manager.invokeAction(
+           '{!$RemoteAction.ServerProxyToSaveData.saveUserGroupDetail}', widgetId,selectedgroup, 
+          function(result, event){
+            hideOverLay();
+            $('#ConfigWidgetInstance').modal('hide');
+          }, 
+        {escape: true}
+       );
+    }
+ 
+ </script>
+
+
+</apex:component>
